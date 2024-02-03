@@ -1,0 +1,127 @@
+{
+  "name": "tari",
+  "displayName": "Tari",
+  "description": "Tari testing extension",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "menus": {
+      "view/title": [
+        {
+          "command": "tari.refreshEntry",
+          "when": "view == tari",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tari.addProcess",
+          "when": "view == tari && viewItem == tari.collection",
+          "group": "inline"
+        },
+        {
+          "command": "tari.showLogs",
+          "when": "view == tari && viewItem == tari.info",
+          "group": "inline@1"
+        },
+        {
+          "command": "tari.refreshEntry",
+          "when": "view == tari && viewItem == tari.process",
+          "group": "inline@1"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "tari.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "tari.addProcess",
+        "title": "Add Base Node",
+        "icon": {
+          "light": "resources/light/add.svg",
+          "dark": "resources/dark/add.svg"
+        }
+      },
+      {
+        "command": "tari.showLogs",
+        "title": "Show Logs",
+        "icon": {
+          "light": "resources/light/logs.svg",
+          "dark": "resources/dark/logs.svg"
+        }
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tari",
+          "title": "Tari",
+          "icon": "resources/tari.svg"
+        }
+      ]
+    },
+    "views": {
+      "tari": [
+        {
+          "id": "tari",
+          "name": "Tari"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Tari Settings",
+      "properties": {
+        "tari.jrpcURL": {
+          "type": "string",
+          "default": "http://127.0.0.1:18006",
+          "description": "URL for the jrpc server"
+        },
+        "tari.baseLayerPath": {
+          "type": "string",
+          "default": "d:/Code/Work/tari_orig/tari/feature-dan2/target/debug",
+          "description": "Path to the base layer executables"
+        },
+        "tari.2ndLayerPath": {
+          "type": "string",
+          "default": "d:/Code/Work/tari-dan/target/debug",
+          "description": "Path to the 2nd layer executables"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+}
