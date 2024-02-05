@@ -6,12 +6,19 @@ import JRPCClient from "../../jrpc-client";
 export class BaseNodes extends Collection {
   constructor(jrpcClient: JRPCClient, httpURL: string) {
     super("Base Nodes", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
-    jrpcClient.base_nodes().then((base_nodes) => {
+  }
+
+  public async getChildren(): Promise<vscode.TreeItem[]> {
+    return this.jrpcClient.base_nodes().then((base_nodes) => {
       for (let id in base_nodes) {
-        this.addChild(new BaseNode(jrpcClient, base_nodes[id].name, httpURL, base_nodes[id].is_running));
+        if (!this.hasChild(base_nodes[id].name)) {
+          this.addChild(new BaseNode(this.jrpcClient, base_nodes[id].name, this.httpURL, base_nodes[id].is_running));
+        }
       }
+      return this._children;
     });
   }
+
   public async add() {
     let config = vscode.workspace.getConfiguration("tari");
     let resp = await this.jrpcClient.add_base_node();

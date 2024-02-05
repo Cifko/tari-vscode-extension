@@ -6,10 +6,16 @@ import { ValidatorNode } from "../../processes/src/validator-node";
 export class ValidatorNodes extends Collection {
   constructor(jrpcClient: JRPCClient, httpURL: string) {
     super("Validator Nodes", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
-    jrpcClient.vns().then((vns) => {
-      for (let index in vns) {
-        this.addChild(new ValidatorNode(jrpcClient, vns[index].name, this.httpURL, vns[index].is_running));
+  }
+
+  public async getChildren(): Promise<vscode.TreeItem[]> {
+    return this.jrpcClient.vns().then((vns) => {
+      for (let id in vns) {
+        if (!this.hasChild(vns[id].name)) {
+          this.addChild(new ValidatorNode(this.jrpcClient, vns[id].name, this.httpURL, vns[id].is_running));
+        }
       }
+      return this._children;
     });
   }
 

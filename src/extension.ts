@@ -39,8 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
         return Promise.resolve(collections);
       }
       if (element instanceof Collection) {
-        return Promise.resolve(element.children);
-        5;
+        return element.getChildren();
       }
       if (element instanceof Process) {
         return Promise.resolve(element.children);

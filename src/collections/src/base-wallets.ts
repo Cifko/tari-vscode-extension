@@ -8,13 +8,22 @@ import { BaseWallet } from "../../processes/src/base-wallet";
 export class BaseWallets extends Collection {
   constructor(jrpcClient: JRPCClient, httpURL: string) {
     super("Base Wallets", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
-    jrpcClient.base_wallets().then((base_wallets) => {
-      console.log(base_wallets);
+  }
+
+  public async getChildren(): Promise<vscode.TreeItem[]> {
+    return this.jrpcClient.base_wallets().then((base_wallets) => {
+      this._children = [];
       for (let id in base_wallets) {
-        this.addChild(new BaseWallet(jrpcClient, base_wallets[id].name, httpURL, base_wallets[id].is_running));
+        if (!this.hasChild(base_wallets[id].name)) {
+          this.addChild(
+            new BaseWallet(this.jrpcClient, base_wallets[id].name, this.httpURL, base_wallets[id].is_running)
+          );
+        }
       }
+      return this._children;
     });
   }
+
   public async add() {
     let config = vscode.workspace.getConfiguration("tari");
     let resp = await this.jrpcClient.add_base_wallet();
