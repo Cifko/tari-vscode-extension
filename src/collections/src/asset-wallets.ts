@@ -8,13 +8,13 @@ export class AssetWallets extends Collection {
     super("Asset Wallets", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
     jrpcClient.dan_wallets().then((wallets) => {
       for (let id in wallets) {
-        this.addChild(new AssetWallet(jrpcClient, wallets[id].name, httpURL));
+        this.addChild(new AssetWallet(jrpcClient, wallets[id].name, httpURL, wallets[id].is_running));
       }
     });
   }
   public async add() {
     let config = vscode.workspace.getConfiguration("tari");
     let resp = await this.jrpcClient.add_asset_wallet();
-    this.addChild(new AssetWallet(this.jrpcClient, resp.name, this.httpURL));
+    this.addChild(new AssetWallet(this.jrpcClient, resp.name, this.httpURL, true));
   }
 }

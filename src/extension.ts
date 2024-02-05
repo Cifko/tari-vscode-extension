@@ -51,27 +51,30 @@ export function activate(context: vscode.ExtensionContext) {
     refresh(item: vscode.TreeItem): void {
       this._onDidChangeTreeData.fire(item);
     }
-    add(item: Collection): void {
-      item.add();
+    async add(item: Collection) {
+      await item.add();
       this.refresh(item);
     }
-    show(item: Info): void {
+    show(item: Info) {
       item.show();
+      this.refresh(item);
     }
-    start(item: Process): void {
-      item.start();
+    async start(item: Process) {
+      await item.start();
+      this.refresh(item);
     }
-    stop(item: Process): void {
-      item.stop();
+    async stop(item: Process) {
+      await item.stop();
+      this.refresh(item);
     }
   })();
 
   vscode.window.createTreeView("tari", { treeDataProvider });
   vscode.commands.registerCommand("tari.refreshEntry", (item) => treeDataProvider.refresh(item));
   vscode.commands.registerCommand("tari.show", (item) => treeDataProvider.show(item));
-  vscode.commands.registerCommand("tari.add", (item) => treeDataProvider.add(item));
-  vscode.commands.registerCommand("tari.start", (item) => treeDataProvider.start(item));
-  vscode.commands.registerCommand("tari.stop", (item) => treeDataProvider.stop(item));
+  vscode.commands.registerCommand("tari.add", async (item) => await treeDataProvider.add(item));
+  vscode.commands.registerCommand("tari.start", async (item) => await treeDataProvider.start(item));
+  vscode.commands.registerCommand("tari.stop", async (item) => await treeDataProvider.stop(item));
 }
 
 // This method is called when your extension is deactivated

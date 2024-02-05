@@ -12,12 +12,11 @@ export class Collection extends vscode.TreeItem {
     public readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
-    console.log("Collection constructor", label);
     this.contextValue = "tari.collection";
     this._children = [];
   }
 
-  public add(): void {}
+  public async add() {}
 
   public getPath(): string {
     return os.homedir();

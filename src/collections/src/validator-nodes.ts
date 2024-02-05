@@ -8,7 +8,7 @@ export class ValidatorNodes extends Collection {
     super("Validator Nodes", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
     jrpcClient.vns().then((vns) => {
       for (let index in vns) {
-        this.addChild(new ValidatorNode(jrpcClient, vns[index].name, this.httpURL));
+        this.addChild(new ValidatorNode(jrpcClient, vns[index].name, this.httpURL, vns[index].is_running));
       }
     });
   }
@@ -16,6 +16,6 @@ export class ValidatorNodes extends Collection {
   public async add() {
     let config = vscode.workspace.getConfiguration("tari");
     let resp = await this.jrpcClient.add_validator_node();
-    this.addChild(new ValidatorNode(this.jrpcClient, resp.name, this.httpURL));
+    this.addChild(new ValidatorNode(this.jrpcClient, resp.name, this.httpURL, true));
   }
 }

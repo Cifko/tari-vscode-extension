@@ -48,12 +48,15 @@ class JRPCClient {
   }
 
   public ping = async (): Promise<string> => await this.call("ping", {});
-  public base_nodes = async (): Promise<{ name: string; grpc: string }[]> => await this.call("base_nodes", {});
-  public base_wallets = async (): Promise<{ name: string; grpc: string }[]> => await this.call("base_wallets", {});
-  public vns = async (): Promise<{ name: string; http: string; jrpc: string }[]> => await this.call("vns", {});
-  public dan_wallets = async (): Promise<{ name: string; http: string; jrpc: string }[]> =>
+  public base_nodes = async (): Promise<{ name: string; grpc: string; is_running: boolean }[]> =>
+    await this.call("base_nodes", {});
+  public base_wallets = async (): Promise<{ name: string; grpc: string; is_running: boolean }[]> =>
+    await this.call("base_wallets", {});
+  public vns = async (): Promise<{ name: string; http: string; jrpc: string; is_running: boolean }[]> =>
+    await this.call("vns", {});
+  public dan_wallets = async (): Promise<{ name: string; http: string; jrpc: string; is_running: boolean }[]> =>
     await this.call("dan_wallets", {});
-  public indexers = async (): Promise<{ name: string; http: string; jrpc: string }[]> =>
+  public indexers = async (): Promise<{ name: string; http: string; jrpc: string; is_running: boolean }[]> =>
     await this.call("indexers", {});
   public add_base_node = async (): Promise<{ name: string }> => await this.call("add_base_node", {});
   public add_base_wallet = async (): Promise<{ name: string }> => await this.call("add_base_wallet", {});
@@ -61,6 +64,7 @@ class JRPCClient {
   public add_indexer = async (): Promise<{ name: string }> => await this.call("add_indexer", {});
   public add_validator_node = async (): Promise<{ name: string }> => await this.call("add_validator_node", {});
   public start = async (what: string): Promise<{ success: boolean }> => await this.call("start", [what]);
+  public is_running = async (what: string): Promise<{ is_running: boolean }> => await this.call("is_running", [what]);
   public stop = async (what: string): Promise<{ success: boolean }> => await this.call("stop", [what]);
   public get_logs = async (name: string): Promise<any> => await this.call("get_logs", [name]);
   public mine = async (blocks: number): Promise<{}> => await this.call("mine", { blocks });

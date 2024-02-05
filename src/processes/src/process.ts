@@ -8,10 +8,11 @@ export class Process extends vscode.TreeItem {
     public readonly jrpcClient: JRPCClient,
     public readonly label: string,
     public readonly httpURL: string,
+    is_running: boolean,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.Collapsed
   ) {
     super(label, collapsibleState);
-    this.contextValue = "tari.process";
+    this.contextValue = is_running ? "tari.process" : "tari.processStopped";
     this.children = [];
     jrpcClient.get_logs(label).then((logs) => {
       logs.forEach((log: [string, string, string]) => {
@@ -20,12 +21,15 @@ export class Process extends vscode.TreeItem {
     });
   }
 
-  public stop() {
-    this.jrpcClient.stop(this.label);
+  public async stop() {
+    await this.jrpcClient.stop(this.label);
     this.contextValue = "tari.processStopped";
   }
-  public start() {
-    this.jrpcClient.start(this.label);
+  public async start() {
+    await this.jrpcClient.start(this.label);
     this.contextValue = "tari.process";
+  }
+  public async is_running() {
+    await this.jrpcClient.is_running(this.label);
   }
 }
