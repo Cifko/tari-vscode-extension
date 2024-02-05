@@ -4,24 +4,26 @@ import * as vscode from "vscode";
 import { BaseNodes, Collection, AssetWallets, Indexers, ValidatorNodes, BaseWallets } from "./collections";
 import { Process } from "./processes";
 import JRPCClient from "./jrpc-client";
+import type { Info } from "./info";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   let config = vscode.workspace.getConfiguration("tari");
   let jrpcURL = config.get<string>("jrpcURL");
-  if (jrpcURL === undefined) {
-    throw new Error("jrpcURL is undefined");
+  let httpURL = config.get<string>("httpURL");
+  if (jrpcURL === undefined || httpURL === undefined) {
+    throw new Error("jrpcURL or httpURL is undefined");
   }
 
   let jrpcClient = new JRPCClient(jrpcURL);
 
   let collections = [
-    new ValidatorNodes(jrpcClient),
-    new AssetWallets(jrpcClient),
-    new Indexers(jrpcClient),
-    new BaseNodes(jrpcClient),
-    new BaseWallets(jrpcClient),
+    new ValidatorNodes(jrpcClient, httpURL),
+    new AssetWallets(jrpcClient, httpURL),
+    new Indexers(jrpcClient, httpURL),
+    new BaseNodes(jrpcClient, httpURL),
+    new BaseWallets(jrpcClient, httpURL),
   ];
   const treeDataProvider = new (class implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined> = new vscode.EventEmitter<
@@ -33,12 +35,12 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     getChildren(element?: vscode.TreeItem): Thenable<vscode.TreeItem[]> {
-      console.log("getChildren", element);
       if (!element) {
         return Promise.resolve(collections);
       }
       if (element instanceof Collection) {
         return Promise.resolve(element.children);
+        5;
       }
       if (element instanceof Process) {
         return Promise.resolve(element.children);
@@ -49,19 +51,27 @@ export function activate(context: vscode.ExtensionContext) {
     refresh(item: vscode.TreeItem): void {
       this._onDidChangeTreeData.fire(item);
     }
-    addProcess(item: Collection): void {
+    add(item: Collection): void {
       item.add();
       this.refresh(item);
     }
-    showLogs(item: Process): void {
-      item.showLogs();
+    show(item: Info): void {
+      item.show();
+    }
+    start(item: Process): void {
+      item.start();
+    }
+    stop(item: Process): void {
+      item.stop();
     }
   })();
 
   vscode.window.createTreeView("tari", { treeDataProvider });
   vscode.commands.registerCommand("tari.refreshEntry", (item) => treeDataProvider.refresh(item));
-  vscode.commands.registerCommand("tari.showLogs", (item) => treeDataProvider.showLogs(item));
-  vscode.commands.registerCommand("tari.addProcess", (item) => treeDataProvider.addProcess(item));
+  vscode.commands.registerCommand("tari.show", (item) => treeDataProvider.show(item));
+  vscode.commands.registerCommand("tari.add", (item) => treeDataProvider.add(item));
+  vscode.commands.registerCommand("tari.start", (item) => treeDataProvider.start(item));
+  vscode.commands.registerCommand("tari.stop", (item) => treeDataProvider.stop(item));
 }
 
 // This method is called when your extension is deactivated

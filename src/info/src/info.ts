@@ -6,7 +6,7 @@ export class Info extends vscode.TreeItem {
     this.contextValue = "tari.info";
   }
 
-  public showLogs(): void {
-    console.log("showLogs");
+  public show(): void {
+    console.log("show");
   }
 }

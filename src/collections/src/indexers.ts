@@ -4,15 +4,17 @@ import JRPCClient from "../../jrpc-client";
 import { Indexer } from "../../processes/src/indexer";
 
 export class Indexers extends Collection {
-  constructor(jrpcClient: JRPCClient) {
-    super("Indexers", vscode.TreeItemCollapsibleState.Expanded);
+  constructor(jrpcClient: JRPCClient, httpURL: string) {
+    super("Indexers", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
     jrpcClient.indexers().then((indexers) => {
       for (let index in indexers) {
-        this.addChild(new Indexer(indexers[index].name));
+        this.addChild(new Indexer(jrpcClient, indexers[index].name, httpURL));
       }
     });
   }
-  public add(): void {
-    console.log("add indexer");
+  public async add() {
+    let config = vscode.workspace.getConfiguration("tari");
+    let resp = await this.jrpcClient.add_indexer();
+    this.addChild(new Indexer(this.jrpcClient, resp.name, this.httpURL));
   }
 }

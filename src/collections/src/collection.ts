@@ -1,10 +1,16 @@
 import * as vscode from "vscode";
 import * as os from "os";
+import type JRPCClient from "../../jrpc-client";
 
 export class Collection extends vscode.TreeItem {
   private _children: vscode.TreeItem[];
 
-  constructor(public readonly label: string, public readonly collapsibleState: vscode.TreeItemCollapsibleState) {
+  constructor(
+    public readonly label: string,
+    public readonly jrpcClient: JRPCClient,
+    public readonly httpURL: string,
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+  ) {
     super(label, collapsibleState);
     console.log("Collection constructor", label);
     this.contextValue = "tari.collection";

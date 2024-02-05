@@ -23,7 +23,8 @@ class JRPCClient {
         params,
         id: 1,
       });
-
+      console.log("Method", method, "Params", params, "Response", response.data.result);
+      console.log("JRPC response", response.data.result);
       return response.data.result;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -46,42 +47,23 @@ class JRPCClient {
     }
   }
 
-  public async ping(): Promise<string> {
-    return this.call("ping", {});
-  }
-  public async base_nodes(): Promise<{ name: string; grpc: string }[]> {
-    return this.call("base_nodes", {});
-  }
-  public async base_wallets(): Promise<{ name: string; grpc: string }[]> {
-    return this.call("base_wallets", {});
-  }
-  public async vns(): Promise<{ name: string; http: string; jrpc: string }[]> {
-    return this.call("vns", {});
-  }
-  public async dan_wallets(): Promise<{ name: string; http: string; jrpc: string }[]> {
-    return this.call("dan_wallets", {});
-  }
-  public async indexers(): Promise<{ name: string; http: string; jrpc: string }[]> {
-    return this.call("indexers", {});
-  }
-  public async get_logs(name: string): Promise<any> {
-    return this.call("get_logs", [name]);
-  }
-  // public async http_vn(id: number): Promise<string | null> {
-  //   return this.call("http_vn", { id });
-  // }
-  // public async http_dan(id: number): Promise<string | null> {
-  //   return this.call("http_vn", { id });
-  // }
-  // public async http_indexer(id: number): Promise<string | null> {
-  //   return this.call("http_indexer", { id });
-  // }
-  // public async http_connector(): Promise<string | null> {
-  //   return this.call("http_connector", {});
-  // }
-  public async mine(blocks: number): Promise<{}> {
-    return this.call("mine", { blocks });
-  }
+  public ping = async (): Promise<string> => await this.call("ping", {});
+  public base_nodes = async (): Promise<{ name: string; grpc: string }[]> => await this.call("base_nodes", {});
+  public base_wallets = async (): Promise<{ name: string; grpc: string }[]> => await this.call("base_wallets", {});
+  public vns = async (): Promise<{ name: string; http: string; jrpc: string }[]> => await this.call("vns", {});
+  public dan_wallets = async (): Promise<{ name: string; http: string; jrpc: string }[]> =>
+    await this.call("dan_wallets", {});
+  public indexers = async (): Promise<{ name: string; http: string; jrpc: string }[]> =>
+    await this.call("indexers", {});
+  public add_base_node = async (): Promise<{ name: string }> => await this.call("add_base_node", {});
+  public add_base_wallet = async (): Promise<{ name: string }> => await this.call("add_base_wallet", {});
+  public add_asset_wallet = async (): Promise<{ name: string }> => await this.call("add_asset_wallet", {});
+  public add_indexer = async (): Promise<{ name: string }> => await this.call("add_indexer", {});
+  public add_validator_node = async (): Promise<{ name: string }> => await this.call("add_validator_node", {});
+  public start = async (what: string): Promise<{ success: boolean }> => await this.call("start", [what]);
+  public stop = async (what: string): Promise<{ success: boolean }> => await this.call("stop", [what]);
+  public get_logs = async (name: string): Promise<any> => await this.call("get_logs", [name]);
+  public mine = async (blocks: number): Promise<{}> => await this.call("mine", { blocks });
 }
 
 export default JRPCClient;

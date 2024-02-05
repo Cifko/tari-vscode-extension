@@ -12,6 +12,13 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "themes": [
+      {
+        "label": "My Theme",
+        "uiTheme": "vs-dark",
+        "path": "./resources/styles.css"
+      }
+    ],
     "menus": {
       "view/title": [
         {
@@ -22,19 +29,29 @@
       ],
       "view/item/context": [
         {
-          "command": "tari.addProcess",
+          "command": "tari.add",
           "when": "view == tari && viewItem == tari.collection",
           "group": "inline"
         },
         {
-          "command": "tari.showLogs",
+          "command": "tari.show",
           "when": "view == tari && viewItem == tari.info",
           "group": "inline@1"
         },
         {
-          "command": "tari.refreshEntry",
-          "when": "view == tari && viewItem == tari.process",
+          "command": "tari.start",
+          "when": "view == tari && viewItem == tari.processStopped",
           "group": "inline@1"
+        },
+        {
+          "command": "tari.stop",
+          "when": "view == tari && viewItem == tari.process",
+          "group": "inline@2"
+        },
+        {
+          "command": "tari.refreshEntry",
+          "when": "view == tari && (viewItem == tari.process || viewItem == tari.processStopped)",
+          "group": "inline@3"
         }
       ]
     },
@@ -48,20 +65,30 @@
         }
       },
       {
-        "command": "tari.addProcess",
-        "title": "Add Base Node",
+        "command": "tari.add",
+        "title": "Add",
         "icon": {
           "light": "resources/light/add.svg",
           "dark": "resources/dark/add.svg"
         }
       },
       {
-        "command": "tari.showLogs",
-        "title": "Show Logs",
+        "command": "tari.show",
+        "title": "Show Info",
         "icon": {
           "light": "resources/light/logs.svg",
           "dark": "resources/dark/logs.svg"
         }
+      },
+      {
+        "command": "tari.start",
+        "title": "Start",
+        "icon": "resources/icons8-start-48.png"
+      },
+      {
+        "command": "tari.stop",
+        "title": "Stop",
+        "icon": "resources/icons8-close.svg"
       }
     ],
     "viewsContainers": {
@@ -89,15 +116,10 @@
           "default": "http://127.0.0.1:18006",
           "description": "URL for the jrpc server"
         },
-        "tari.baseLayerPath": {
+        "tari.httpURL": {
           "type": "string",
-          "default": "d:/Code/Work/tari_orig/tari/feature-dan2/target/debug",
-          "description": "Path to the base layer executables"
-        },
-        "tari.2ndLayerPath": {
-          "type": "string",
-          "default": "d:/Code/Work/tari-dan/target/debug",
-          "description": "Path to the 2nd layer executables"
+          "default": "http://127.0.0.1:18007",
+          "description": "URL for the jrpc server"
         }
       }
     }

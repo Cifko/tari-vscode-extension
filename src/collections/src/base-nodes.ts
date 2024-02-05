@@ -4,18 +4,17 @@ import { BaseNode } from "../../processes/src/base-node";
 import JRPCClient from "../../jrpc-client";
 
 export class BaseNodes extends Collection {
-  constructor(jrpcClient: JRPCClient) {
-    super("Base Nodes", vscode.TreeItemCollapsibleState.Expanded);
+  constructor(jrpcClient: JRPCClient, httpURL: string) {
+    super("Base Nodes", jrpcClient, httpURL, vscode.TreeItemCollapsibleState.Expanded);
     jrpcClient.base_nodes().then((base_nodes) => {
       for (let id in base_nodes) {
-        this.addChild(new BaseNode(base_nodes[id].name));
+        this.addChild(new BaseNode(jrpcClient, base_nodes[id].name, httpURL));
       }
     });
   }
-  public add(): void {
+  public async add() {
     let config = vscode.workspace.getConfiguration("tari");
-    let baseLayerPath = config.get<string>("baseLayerPath", "");
-    this.addChild(new BaseNode("BaseNode"));
-    console.log("add base node");
+    let resp = await this.jrpcClient.add_base_node();
+    this.addChild(new BaseNode(this.jrpcClient, resp.name, this.httpURL));
   }
 }
