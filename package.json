@@ -23,32 +23,50 @@
       "view/item/context": [
         {
           "command": "tari.add",
-          "when": "view == tari && viewItem == tari.collection",
+          "when": "view == tari && viewItem =~ /\\collection\\b/",
           "group": "inline"
         },
         {
+          "command": "tari.logs",
+          "when": "view == tari && viewItem =~ /\\bprocess\\b/",
+          "group": "navigation"
+        },
+        {
+          "command": "tari.webUI",
+          "when": "view == tari && viewItem =~ /\\bprocess\\b/ && viewItem =~ /\\bis_running\\b/ && viewItem =~ /\\bweb_ui\\b/",
+          "group": "navigation"
+        },
+        {
           "command": "tari.show",
-          "when": "view == tari && viewItem == tari.info",
+          "when": "view == tari && viewItem =~ /\\info\\b/",
           "group": "inline@1"
         },
         {
           "command": "tari.start",
-          "when": "view == tari && viewItem == tari.processStopped",
+          "when": "view == tari && viewItem =~ /\\bprocess\\b/ && !(viewItem =~ /\\bis_running\\b/)",
           "group": "inline@1"
         },
         {
           "command": "tari.stop",
-          "when": "view == tari && viewItem == tari.process",
+          "when": "view == tari && viewItem =~ /\\bprocess\\b/ && viewItem =~ /\\bis_running\\b/",
           "group": "inline@2"
         },
         {
           "command": "tari.refreshEntry",
-          "when": "view == tari && (viewItem == tari.process || viewItem == tari.processStopped)",
+          "when": "view == tari && viewItem =~ /\\bprocess\\b/",
           "group": "inline@3"
         }
       ]
     },
     "commands": [
+      {
+        "command": "tari.logs",
+        "title": "Logs"
+      },
+      {
+        "command": "tari.webUI",
+        "title": "WebUI"
+      },
       {
         "command": "tari.refreshEntry",
         "title": "Refresh",

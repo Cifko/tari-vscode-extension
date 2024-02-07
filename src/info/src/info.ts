@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
+import { TAG, TariTreeItem } from "../../tari-tree-item";
 
-export class Info extends vscode.TreeItem {
+export class Info extends TariTreeItem {
   constructor(public readonly label: string) {
-    super(label, vscode.TreeItemCollapsibleState.None);
-    this.contextValue = "tari.info";
+    super(label, vscode.TreeItemCollapsibleState.None, TAG.info);
   }
 
   public show(): void {

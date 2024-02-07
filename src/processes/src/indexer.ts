@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { Process } from "./process";
 import type JRPCClient from "../../jrpc-client";
+import { TAG } from "../../tari-tree-item";
 
 export class Indexer extends Process {
   constructor(
@@ -10,5 +11,6 @@ export class Indexer extends Process {
     is_running: boolean
   ) {
     super(jrpcClient, label, httpURL, is_running);
+    this.addTag(TAG.webui);
   }
 }

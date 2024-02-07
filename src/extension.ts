@@ -66,6 +66,11 @@ export function activate(context: vscode.ExtensionContext) {
       await item.stop();
       this.refresh(item);
     }
+    async webui(item: Process) {
+      console.log("webui");
+      await item.webui();
+    }
+    async logs(item: Process) {}
   })();
 
   vscode.window.createTreeView("tari", { treeDataProvider });
@@ -74,6 +79,8 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("tari.add", async (item) => await treeDataProvider.add(item));
   vscode.commands.registerCommand("tari.start", async (item) => await treeDataProvider.start(item));
   vscode.commands.registerCommand("tari.stop", async (item) => await treeDataProvider.stop(item));
+  vscode.commands.registerCommand("tari.logs", async (item) => await treeDataProvider.logs(item));
+  vscode.commands.registerCommand("tari.webUI", async (item) => await treeDataProvider.webui(item));
 }
 
 // This method is called when your extension is deactivated

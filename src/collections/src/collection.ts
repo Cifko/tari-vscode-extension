@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import * as os from "os";
 import type JRPCClient from "../../jrpc-client";
+import { TAG, TariTreeItem } from "../../tari-tree-item";
 
-export abstract class Collection extends vscode.TreeItem {
+export abstract class Collection extends TariTreeItem {
   protected _children: vscode.TreeItem[];
 
   constructor(
@@ -11,8 +12,7 @@ export abstract class Collection extends vscode.TreeItem {
     public readonly httpURL: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
-    super(label, collapsibleState);
-    this.contextValue = "tari.collection";
+    super(label, collapsibleState, TAG.collection);
     this._children = [];
   }
 

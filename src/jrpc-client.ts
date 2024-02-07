@@ -68,6 +68,9 @@ class JRPCClient {
   public stop = async (what: string): Promise<{ success: boolean }> => await this.call("stop", [what]);
   public get_logs = async (name: string): Promise<any> => await this.call("get_logs", [name]);
   public mine = async (blocks: number): Promise<{}> => await this.call("mine", { blocks });
+  public http = async (what: string): Promise<string> => await this.call("http", { what });
+  public grpc = async (what: string): Promise<string> => await this.call("grpc", [what]);
+  public jprc = async (what: string): Promise<string> => await this.call("jrpc", [what]);
 }
 
 export default JRPCClient;
