@@ -37,4 +37,7 @@ export class Process extends TariTreeItem {
     await this.jrpcClient.is_running(this.label);
   }
   public async webui() {}
+  public async logs() {
+    return await this.jrpcClient.get_logs(this.label);
+  }
 }

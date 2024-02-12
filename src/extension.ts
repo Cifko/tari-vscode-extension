@@ -5,6 +5,7 @@ import { BaseNodes, Collection, AssetWallets, Indexers, ValidatorNodes, BaseWall
 import { Process } from "./processes";
 import JRPCClient from "./jrpc-client";
 import type { Info } from "./info";
+import * as path from "path";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -70,7 +71,50 @@ export function activate(context: vscode.ExtensionContext) {
       console.log("webui");
       await item.webui();
     }
-    async logs(item: Process) {}
+
+    async info(item: Process) {
+      let panel = vscode.window.createWebviewPanel("tariInfo", `Info ${item.label}`, vscode.ViewColumn.Active, {
+        enableScripts: true,
+      });
+      // const logs = await item.logs();
+      const scriptPathOnDisk = vscode.Uri.file(path.join(context.extensionPath, "dist", "index.js"));
+      const cssPathOnDisk = vscode.Uri.file(path.join(context.extensionPath, "dist", "index.css"));
+      const scriptUri = panel.webview.asWebviewUri(scriptPathOnDisk);
+      const cssUri = panel.webview.asWebviewUri(cssPathOnDisk);
+      const data = { path: `/info/${item.label}`, jrpcURL };
+      const initialData = btoa(JSON.stringify(data));
+      // console.log(scriptUri);
+      // console.log(cssUri);
+      // console.log(initialData);
+      // console.log(data);
+      // console.log(jrpcURL);
+      panel.webview.html = `<!doctype html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <!-- Import the VS Code webview UI toolkit styles -->
+          <!-- link rel="stylesheet" href="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.css" / -->
+      
+          <!-- Import the VS Code webview UI toolkit script -->
+          <!-- script src="node_modules/@vscode/webview-ui-toolkit/dist/toolkit.js" -->
+          <script>window.initialData="${initialData}"</script>
+          <script type="module" crossorigin src="${scriptUri}"></script>
+          <link rel="stylesheet" crossorigin href="${cssUri}"> 
+        </head>
+        <body>
+          <div id="root"></div>
+        </body>
+      </html>`;
+      panel.webview.onDidReceiveMessage(
+        (message) => {
+          console.log(message);
+          vscode.commands.executeCommand(message.command, message.data);
+        },
+        undefined,
+        context.subscriptions
+      );
+    }
   })();
 
   vscode.window.createTreeView("tari", { treeDataProvider });
@@ -79,8 +123,23 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("tari.add", async (item) => await treeDataProvider.add(item));
   vscode.commands.registerCommand("tari.start", async (item) => await treeDataProvider.start(item));
   vscode.commands.registerCommand("tari.stop", async (item) => await treeDataProvider.stop(item));
-  vscode.commands.registerCommand("tari.logs", async (item) => await treeDataProvider.logs(item));
+  vscode.commands.registerCommand("tari.info", async (item) => await treeDataProvider.info(item));
   vscode.commands.registerCommand("tari.webUI", async (item) => await treeDataProvider.webui(item));
+  vscode.commands.registerCommand("tari.openDB", async function (db_file) {
+    let content = await jrpcClient.get_file_binary(db_file);
+    console.log(db_file);
+    const decodedBuffer = Buffer.from(content, "base64");
+    const decodedUint8Array = new Uint8Array(decodedBuffer);
+    let output = vscode.Uri.file(path.join(context.extensionPath, "temp.db"));
+    let encoder = new TextEncoder();
+    await vscode.workspace.fs.writeFile(output, decodedUint8Array);
+    vscode.commands.executeCommand("vscode.open", output);
+  });
+  vscode.commands.registerCommand("tari.openLog", async function (log_file) {
+    let content = await jrpcClient.get_file(log_file);
+    const doc = await vscode.workspace.openTextDocument({ language: "log", content });
+    await vscode.window.showTextDocument(doc, { preview: false });
+  });
 }
 
 // This method is called when your extension is deactivated

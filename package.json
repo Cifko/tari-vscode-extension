@@ -27,7 +27,7 @@
           "group": "inline"
         },
         {
-          "command": "tari.logs",
+          "command": "tari.info",
           "when": "view == tari && viewItem =~ /\\bprocess\\b/",
           "group": "navigation"
         },
@@ -60,8 +60,16 @@
     },
     "commands": [
       {
-        "command": "tari.logs",
-        "title": "Logs"
+        "command": "tari.openLog",
+        "title": "Open log"
+      },
+      {
+        "command": "tari.openDB",
+        "title": "Open DB"
+      },
+      {
+        "command": "tari.info",
+        "title": "Info"
       },
       {
         "command": "tari.webUI",
@@ -155,6 +163,11 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "axios": "^1.6.7"
+    "@vscode/codicons": "^0.0.35",
+    "@vscode/webview-ui-toolkit": "^1.4.0",
+    "axios": "^1.6.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0"
   }
 }
