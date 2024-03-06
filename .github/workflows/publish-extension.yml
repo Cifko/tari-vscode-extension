@@ -31,8 +31,5 @@ jobs:
       - name: Publish to VS Marketplace
         run: npx vsce publish patch -p ${{ secrets.VSC_MKTP_PAT }}
 
-      - name: Commit version
-        run: |
-          git add package.json
-          git commit -m "Bump version"
-          git push
+      - name: Push the version bump
+        run: git push
