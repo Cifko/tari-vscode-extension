@@ -33,3 +33,5 @@ jobs:
 
       - name: Push the version bump
         run: git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
