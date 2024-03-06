@@ -21,7 +21,7 @@ jobs:
         run: npm ci && cd webview && npm ci
 
       - name: Package Extension
-        run: npm run vscode:package
+        run: npm vsce package
 
       - name: Publish to VS Marketplace
         run: npx vsce publish -p ${{ secrets.VSC_MKTP_PAT }}
