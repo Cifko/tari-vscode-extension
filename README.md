@@ -25,3 +25,6 @@ This extension contributes the following settings:
 
 ### 1.0.0
 Initial release
+
+### 1.0.4
+Testing
