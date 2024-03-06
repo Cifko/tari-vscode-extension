@@ -4,13 +4,8 @@ import type JRPCClient from "../../jrpc-client";
 import { TAG } from "../../tari-tree-item";
 
 export class ValidatorNode extends Process {
-  constructor(
-    public jrpcClient: JRPCClient,
-    public readonly label: string,
-    public readonly httpURL: string,
-    is_running: boolean
-  ) {
-    super(jrpcClient, label, httpURL, is_running);
+  constructor(public jrpcClient: JRPCClient, public readonly label: string, is_running: boolean) {
+    super(jrpcClient, label, is_running);
     this.addTag(TAG.webui);
   }
 

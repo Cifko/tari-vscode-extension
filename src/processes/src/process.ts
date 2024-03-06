@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Log, type Info } from "../../info";
+import { type Info } from "../../info";
 import type JRPCClient from "../../jrpc-client";
 import { TAG, TariTreeItem } from "../../tari-tree-item";
 
@@ -9,7 +9,6 @@ export class Process extends TariTreeItem {
   constructor(
     public readonly jrpcClient: JRPCClient,
     public readonly label: string,
-    public readonly httpURL: string,
     is_running: boolean,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState = vscode.TreeItemCollapsibleState.None
   ) {
@@ -17,12 +16,6 @@ export class Process extends TariTreeItem {
     if (is_running) {
       this.addTag(TAG.is_running);
     }
-    // this.children = [];
-    // jrpcClient.get_logs(label).then((logs) => {
-    //   logs.forEach((log: [string, string, string]) => {
-    //     this.children.push(new Log(log[2], this.httpURL, log[0]));
-    //   });
-    // });
   }
 
   public async stop() {

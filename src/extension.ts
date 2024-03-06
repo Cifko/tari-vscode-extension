@@ -12,19 +12,18 @@ import * as path from "path";
 export function activate(context: vscode.ExtensionContext) {
   let config = vscode.workspace.getConfiguration("tari");
   let jrpcURL = config.get<string>("jrpcURL");
-  let httpURL = config.get<string>("httpURL");
-  if (jrpcURL === undefined || httpURL === undefined) {
-    throw new Error("jrpcURL or httpURL is undefined");
+  if (jrpcURL === undefined) {
+    throw new Error("jrpcURL is undefined");
   }
 
   let jrpcClient = new JRPCClient(jrpcURL);
 
   let collections = [
-    new ValidatorNodes(jrpcClient, httpURL),
-    new AssetWallets(jrpcClient, httpURL),
-    new Indexers(jrpcClient, httpURL),
-    new BaseNodes(jrpcClient, httpURL),
-    new BaseWallets(jrpcClient, httpURL),
+    new ValidatorNodes(jrpcClient),
+    new AssetWallets(jrpcClient),
+    new Indexers(jrpcClient),
+    new BaseNodes(jrpcClient),
+    new BaseWallets(jrpcClient),
   ];
   const treeDataProvider = new (class implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined> = new vscode.EventEmitter<
@@ -68,7 +67,6 @@ export function activate(context: vscode.ExtensionContext) {
       this.refresh(item);
     }
     async webui(item: Process) {
-      console.log("webui");
       await item.webui();
     }
 
@@ -83,11 +81,6 @@ export function activate(context: vscode.ExtensionContext) {
       const cssUri = panel.webview.asWebviewUri(cssPathOnDisk);
       const data = { path: `/info/${item.label}`, jrpcURL };
       const initialData = btoa(JSON.stringify(data));
-      // console.log(scriptUri);
-      // console.log(cssUri);
-      // console.log(initialData);
-      // console.log(data);
-      // console.log(jrpcURL);
       panel.webview.html = `<!doctype html>
       <html lang="en">
         <head>
@@ -108,7 +101,6 @@ export function activate(context: vscode.ExtensionContext) {
       </html>`;
       panel.webview.onDidReceiveMessage(
         (message) => {
-          console.log(message);
           vscode.commands.executeCommand(message.command, message.data);
         },
         undefined,
@@ -127,7 +119,6 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("tari.webUI", async (item) => await treeDataProvider.webui(item));
   vscode.commands.registerCommand("tari.openDB", async function (db_file) {
     let content = await jrpcClient.get_file_binary(db_file);
-    console.log(db_file);
     const decodedBuffer = Buffer.from(content, "base64");
     const decodedUint8Array = new Uint8Array(decodedBuffer);
     let output = vscode.Uri.file(path.join(context.extensionPath, "temp.db"));

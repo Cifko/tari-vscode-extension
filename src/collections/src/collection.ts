@@ -9,7 +9,6 @@ export abstract class Collection extends TariTreeItem {
   constructor(
     public readonly label: string,
     public readonly jrpcClient: JRPCClient,
-    public readonly httpURL: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState
   ) {
     super(label, collapsibleState, TAG.collection);
