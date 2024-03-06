@@ -24,4 +24,4 @@ jobs:
         run: npx vsce package
 
       - name: Publish to VS Marketplace
-        run: npx vsce publish -p ${{ secrets.VSC_MKTP_PAT }}
+        run: npx vsce publish patch -p ${{ secrets.VSC_MKTP_PAT }}
